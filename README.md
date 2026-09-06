@@ -108,3 +108,7 @@ A fonte OLTP tem 17 tabelas, das quais 7 são canônicas e alimentam bronze/silv
 - `.env` contém credenciais reais e nunca é versionado — copie de `.env.example` e preencha localmente.
 - Nenhum segredo (senha, chave de assinatura) fica hardcoded em código ou em arquivo versionado — tudo via `env_var()` (dbt) ou variável de ambiente lida em runtime (Airflow).
 - `airflow/.env` guarda a Fernet key, secret keys da API e senha de alerta do Airflow — também nunca versionado.
+
+## Autor
+
+**Claudio Ferreira Neves** — [LinkedIn](https://www.linkedin.com/in/claudio-f-neves)
