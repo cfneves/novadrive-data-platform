@@ -66,6 +66,17 @@ dbt build --select <model>+ --full-refresh --indirect-selection cautious   # dep
 
 A DAG `dbt_medalhao_novadrive` (`airflow/dags/dw_dbt_medalhao.py`) roda a pipeline inteira automaticamente, todo dia às 07h (America/Sao_Paulo): extrai bronze via Python/`PostgresHook`, depois encadeia `dbt seed → snapshot → silver → gold (dimensions+facts) → marts → testes singulares → audits → checagem de warnings`. Ver `airflow/README.md` e `airflow/CLAUDE.md` para como subir o stack completo via Docker Compose.
 
+## Acessando cada parte da stack
+
+dbt não tem uma UI própria como o Airflow — cada peça se visualiza de um jeito diferente:
+
+| O que ver | Como | URL/onde |
+|---|---|---|
+| Status das execuções, DAG, logs | Airflow webserver | `http://localhost:8080` |
+| Lineage e documentação dos models dbt | `dbt docs generate && dbt docs serve --port 8081` (porta diferente da do Airflow) | `http://localhost:8081` |
+| Dados de verdade (bronze/silver/gold) | Cliente Postgres (pgAdmin, DBeaver, `psql`) | `localhost:5433`, banco `novadrive_dw` |
+| Dashboards e medidas de negócio | Power BI Desktop, projeto `.pbip` separado (fora deste repo) | consome o schema `gold` via conector nativo Postgres |
+
 ## Arquitetura de camadas
 
 ```
