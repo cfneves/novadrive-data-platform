@@ -2,9 +2,21 @@
 
 Pipeline de dados completo simulando a operação de uma concessionária fictícia ("NovaDrive Motors"), construído como um degrau em direção a uma futura integração real com um ERP Protheus.
 
-**Arquitetura**: `Postgres OLTP (fonte remota) → Airflow (extract + load Bronze) → dbt (transform Bronze → Silver → Gold) → Postgres DW → Power BI`
+## Objetivo
+
+A área comercial de uma rede de concessionárias precisa responder pergunta simples todo dia: quanto cada vendedor vendeu, se o desconto dado está corroendo a margem, qual segmento de veículo está puxando a receita, qual região está performando pior. Sem um pipeline de dados, essas respostas dependem de consulta manual direto na base operacional, sem histórico tratado, sem teste de qualidade, sem atualização automática.
+
+Este projeto entrega isso: extração e transformação automáticas todo dia, com teste de qualidade rodando junto (integridade referencial, reconciliação contra fontes redundantes, faixa de valor aceitável) e um modelo de dados pronto pro Power BI, com medida de receita, ticket médio, percentual de desconto e crescimento mensal já calculadas. Ninguém precisa esperar uma query ad hoc pra cada pergunta nova.
+
+É também, de propósito, um degrau: a arquitetura (extração isolada da transformação, camada bem definida, teste automatizado) é a mesma que seria usada numa integração real com um ERP como o Protheus. Só a fonte muda.
+
+## Arquitetura
+
+`Postgres OLTP (fonte remota) → Airflow (extract + load Bronze) → dbt (transform Bronze → Silver → Gold) → Postgres DW → Power BI`
 
 Airflow é responsável só por Extract + Load; toda a transformação (deduplicação, normalização, classificação de negócio, modelagem dimensional) é feita pelo dbt, em arquitetura medalhão.
+
+![Fluxo de dados: Postgres de origem, extraído pelo Airflow para bronze, transformado pelo dbt em silver e gold dentro do Postgres DW, consumido pelo Power BI](docs/architecture.svg)
 
 ## Stack
 

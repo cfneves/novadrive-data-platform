@@ -1,0 +1,72 @@
+<svg viewBox="0 0 1180 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fluxo de dados: Postgres de origem é extraído pelo Airflow para o schema bronze, o dbt transforma bronze em silver e depois em gold dentro do Postgres DW, e o Power BI consome o gold direto.">
+  <style>
+    :root { color-scheme: light dark; }
+    .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+    .box-accent { fill: #eff6ff; stroke: #2a78d6; stroke-width: 2; }
+    .title { font: 600 15px "Segoe UI", system-ui, sans-serif; fill: #0f172a; }
+    .sub { font: 400 11.5px "Segoe UI", system-ui, sans-serif; fill: #475569; }
+    .edge-label { font: 500 11px "Segoe UI", system-ui, sans-serif; fill: #475569; }
+    .arrow { stroke: #64748b; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #171b21; stroke: #333944; }
+      .box-accent { fill: #12202f; stroke: #4c93e8; }
+      .title { fill: #f3f5f8; }
+      .sub, .edge-label { fill: #aab0bc; }
+      .arrow { stroke: #7d8494; }
+    }
+  </style>
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <!-- 1: Postgres OLTP -->
+  <rect x="10" y="90" width="200" height="120" rx="10" class="box" />
+  <text x="110" y="140" text-anchor="middle" class="title">Postgres OLTP</text>
+  <text x="110" y="160" text-anchor="middle" class="sub">fonte remota</text>
+  <text x="110" y="176" text-anchor="middle" class="sub">17 tabelas</text>
+
+  <line x1="210" y1="150" x2="260" y2="150" class="arrow" />
+  <text x="235" y="130" text-anchor="middle" class="edge-label">extrai</text>
+
+  <!-- 2: Airflow -->
+  <rect x="260" y="90" width="200" height="120" rx="10" class="box" />
+  <text x="360" y="132" text-anchor="middle" class="title">Airflow</text>
+  <text x="360" y="152" text-anchor="middle" class="sub">extract + load</text>
+  <text x="360" y="168" text-anchor="middle" class="sub">bronze, diário 07h</text>
+  <text x="360" y="184" text-anchor="middle" class="sub">is_paused: False</text>
+
+  <line x1="460" y1="150" x2="510" y2="150" class="arrow" />
+  <text x="485" y="130" text-anchor="middle" class="edge-label">dispara</text>
+
+  <!-- 3: dbt -->
+  <rect x="510" y="60" width="220" height="180" rx="10" class="box-accent" />
+  <text x="620" y="92" text-anchor="middle" class="title">dbt</text>
+  <text x="620" y="112" text-anchor="middle" class="sub">bronze</text>
+  <text x="620" y="130" text-anchor="middle" class="sub">↓ dedup + normalização</text>
+  <text x="620" y="150" text-anchor="middle" class="sub">silver</text>
+  <text x="620" y="168" text-anchor="middle" class="sub">↓ modelagem dimensional</text>
+  <text x="620" y="188" text-anchor="middle" class="sub">gold</text>
+  <text x="620" y="208" text-anchor="middle" class="sub">+ 4 audits de reconciliação</text>
+
+  <line x1="730" y1="150" x2="780" y2="150" class="arrow" />
+  <text x="755" y="130" text-anchor="middle" class="edge-label">materializa</text>
+
+  <!-- 4: Postgres DW -->
+  <rect x="780" y="90" width="190" height="120" rx="10" class="box" />
+  <text x="875" y="140" text-anchor="middle" class="title">Postgres DW</text>
+  <text x="875" y="160" text-anchor="middle" class="sub">novadrive_dw</text>
+  <text x="875" y="176" text-anchor="middle" class="sub">schema gold</text>
+
+  <line x1="970" y1="150" x2="1020" y2="150" class="arrow" />
+  <text x="995" y="130" text-anchor="middle" class="edge-label">consome</text>
+
+  <!-- 5: Power BI -->
+  <rect x="1020" y="90" width="150" height="120" rx="10" class="box" />
+  <text x="1095" y="140" text-anchor="middle" class="title">Power BI</text>
+  <text x="1095" y="160" text-anchor="middle" class="sub">.pbip / TMDL</text>
+  <text x="1095" y="176" text-anchor="middle" class="sub">star schema</text>
+
+  <text x="590" y="270" text-anchor="middle" class="sub">Airflow orquestra o extract+load; toda a transformação (bronze → silver → gold) é responsabilidade do dbt.</text>
+</svg>
