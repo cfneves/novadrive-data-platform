@@ -1,0 +1,8 @@
+tipo_origem,tipo_padronizado,categoria,ordem_tipo
+SUV,SUV,SUV,1
+SEDAN,Sedan,Sedan,2
+HATCH,Hatch,Hatch,3
+HATCHBACK,Hatch,Hatch,3
+PICAPE,Picape,Picape,4
+PICK-UP,Picape,Picape,4
+PICKUP,Picape,Picape,4

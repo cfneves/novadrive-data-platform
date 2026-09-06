@@ -1,0 +1,157 @@
+version: 2
+
+models:
+  - name: silver_estados
+    description: >
+      Estados normalizados e enriquecidos com região (via seed_regioes_estados).
+      Materialização incremental (delete+insert) por id_estados.
+    columns:
+      - name: id_estados
+        tests: [unique, not_null]
+      - name: sigla
+        tests: [not_null]
+      - name: regiao
+        tests:
+          - accepted_values:
+              values: ["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"]
+      - name: data_atualizacao
+        tests:
+          - not_null
+          - not_before_column:
+              compare_column: data_inclusao
+
+  - name: silver_cidades
+    description: Cidades normalizadas, uma linha por id_cidades.
+    columns:
+      - name: id_cidades
+        tests: [unique, not_null]
+      - name: cidade
+        tests: [not_null]
+      - name: id_estados
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_estados')
+              field: id_estados
+      - name: data_atualizacao
+        tests:
+          - not_before_column:
+              compare_column: data_inclusao
+
+  - name: silver_concessionarias
+    description: Concessionárias normalizadas, uma linha por id_concessionarias.
+    columns:
+      - name: id_concessionarias
+        tests: [unique, not_null]
+      - name: concessionaria
+        tests: [not_null]
+      - name: id_cidades
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_cidades')
+              field: id_cidades
+      - name: data_atualizacao
+        tests:
+          - not_before_column:
+              compare_column: data_inclusao
+
+  - name: silver_clientes
+    description: Clientes normalizados, uma linha por id_clientes.
+    columns:
+      - name: id_clientes
+        tests: [unique, not_null]
+      - name: cliente
+        tests: [not_null]
+      - name: id_concessionarias
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_concessionarias')
+              field: id_concessionarias
+      - name: data_atualizacao
+        tests:
+          - not_before_column:
+              compare_column: data_inclusao
+
+  - name: silver_vendedores
+    description: Vendedores normalizados, uma linha por id_vendedores.
+    columns:
+      - name: id_vendedores
+        tests: [unique, not_null]
+      - name: nome
+        tests: [not_null]
+      - name: id_concessionarias
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_concessionarias')
+              field: id_concessionarias
+      - name: data_atualizacao
+        tests:
+          - not_before_column:
+              compare_column: data_inclusao
+
+  - name: silver_veiculos
+    description: >
+      Veículos normalizados (dedup, tipo padronizado só na forma/ortografia).
+      Classificação de negócio (tipo padronizado de catálogo, categoria e
+      segmento comercial) não é feita aqui — fica a cargo do dim_veiculo na
+      Gold, para manter a Silver como camada puramente técnica.
+    columns:
+      - name: id_veiculos
+        tests: [unique, not_null]
+      - name: valor
+        tests:
+          - not_null
+          - positive_value
+      - name: data_atualizacao
+        tests:
+          - not_before_column:
+              compare_column: data_inclusao
+
+  - name: silver_vendas
+    description: >
+      Vendas normalizadas, uma linha por id_vendas. Grão idêntico ao de
+      bronze_vendas — nenhum enriquecimento de negócio é feito aqui (fica a
+      cargo da Gold).
+    columns:
+      - name: id_vendas
+        tests: [unique, not_null]
+      - name: id_veiculos
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_veiculos')
+              field: id_veiculos
+      - name: id_concessionarias
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_concessionarias')
+              field: id_concessionarias
+      - name: id_vendedores
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_vendedores')
+              field: id_vendedores
+      - name: id_clientes
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_clientes')
+              field: id_clientes
+      - name: valor_pago
+        tests:
+          - not_null
+          - positive_value
+      - name: data_venda
+        tests:
+          - not_null
+          - not_far_future_date:
+              max_days_ahead: 1
+      - name: data_atualizacao
+        tests:
+          - not_before_column:
+              compare_column: data_inclusao

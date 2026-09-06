@@ -1,0 +1,70 @@
+name: "concessionaria_dbt_course"
+version: "1.0.0"
+config-version: 2
+
+profile: "concessionaria_dbt_course"
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests/singular"]
+analysis-paths: ["analyses"]
+snapshot-paths: ["snapshots"]
+macro-paths: ["macros", "tests/generic"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+require-dbt-version: [">=1.7.0", "<1.8.0"]
+
+on-run-start:
+  - "{{ create_run_log_table() }}"
+  - "{{ log_run_event('start') }}"
+
+on-run-end:
+  - "{{ log_run_event('end') }}"
+
+quoting:
+  database: false
+  schema: false
+  identifier: false
+
+vars:
+  incremental_safety_window_minutes: 5
+
+  percentual_desconto_min: -1.0
+  percentual_desconto_max: 1.0
+
+  reconciliacao_tolerancia: 0.01
+
+models:
+  concessionaria_dbt_course:
+    silver:
+      +schema: silver
+      +materialized: incremental
+      +incremental_strategy: delete+insert
+      +tags: ["silver"]
+
+    gold:
+      +schema: gold
+      dimensions:
+        +materialized: table
+        +tags: ["gold", "dimensions"]
+      facts:
+        +materialized: incremental
+        +incremental_strategy: delete+insert
+        +tags: ["gold", "facts"]
+      marts:
+        +materialized: table
+        +tags: ["gold", "marts"]
+      audits:
+        +schema: audits
+        +materialized: view
+        +tags: ["gold", "audits"]
+
+seeds:
+  concessionaria_dbt_course:
+    +schema: seeds
+    reference:
+      +tags: ["reference"]

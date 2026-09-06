@@ -1,0 +1,34 @@
+# credenciais reais - nunca versionar
+.env
+
+# ambiente Python
+.venv/
+__pycache__/
+*.pyc
+
+# artefatos do dbt
+target/
+dbt_packages/
+logs/
+dev.duckdb
+dev.duckdb.wal
+.user.yml
+duckdb.exe
+
+# artefatos do Airflow (gerados em runtime, nao codigo)
+airflow/dbt_runtime/
+
+# exercicios de curso aposentados e copia manual de assets - fora do repo
+# publico (sem funcao na pipeline ativa, ver auditoria de 2026-09-07)
+airflow/dags_treinos/
+airflow/para_copiar_outro_pc/
+airflow/plugins/
+airflow/data/
+
+# assistente de codigo - ferramenta interna, fora do repo publico
+CLAUDE.md
+.claude/
+
+# SO
+.DS_Store
+Thumbs.db

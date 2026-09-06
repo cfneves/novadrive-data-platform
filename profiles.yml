@@ -1,0 +1,12 @@
+concessionaria_dbt_course:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('DW_POSTGRES_HOST', 'localhost') }}"
+      port: "{{ env_var('DW_POSTGRES_PORT', '5433') | as_number }}"
+      user: "{{ env_var('DW_POSTGRES_USER', 'dbt_medalhao') }}"
+      password: "{{ env_var('DW_POSTGRES_PASSWORD') }}"
+      dbname: "{{ env_var('DW_POSTGRES_DATABASE', 'novadrive_dw') }}"
+      schema: bronze
+      threads: 4

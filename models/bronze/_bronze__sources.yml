@@ -1,0 +1,123 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: >
+      Camada bronze - populada pelo Airflow (task extrair_carregar_bronze em
+      dags/dw_dbt_medalhao.py), não pelo dbt. Cópia 1:1 das 7 tabelas
+      canônicas da fonte OLTP (NovaDrive Motors), sem nenhum tratamento.
+      Schema recriado do zero a cada execução da task de extração.
+    schema: bronze
+    tables:
+      - name: estados
+        columns:
+          - name: id_estados
+            tests:
+              - unique:
+                  config:
+                    severity: warn
+              - not_null:
+                  config:
+                    severity: error
+
+      - name: cidades
+        columns:
+          - name: id_cidades
+            tests: [unique, not_null]
+          - name: id_estados
+            tests:
+              - not_null
+              - relationships:
+                  to: source('bronze', 'estados')
+                  field: id_estados
+
+      - name: concessionarias
+        columns:
+          - name: id_concessionarias
+            tests: [unique, not_null]
+          - name: id_cidades
+            tests:
+              - not_null
+              - relationships:
+                  to: source('bronze', 'cidades')
+                  field: id_cidades
+
+      - name: clientes
+        columns:
+          - name: id_clientes
+            tests: [unique, not_null]
+          - name: id_concessionarias
+            tests:
+              - not_null
+              - relationships:
+                  to: source('bronze', 'concessionarias')
+                  field: id_concessionarias
+
+      - name: vendedores
+        columns:
+          - name: id_vendedores
+            tests: [unique, not_null]
+          - name: id_concessionarias
+            tests:
+              - not_null
+              - relationships:
+                  to: source('bronze', 'concessionarias')
+                  field: id_concessionarias
+
+      - name: veiculos
+        columns:
+          - name: id_veiculos
+            tests: [unique, not_null]
+          - name: valor
+            tests:
+              - not_null
+              - positive_value
+
+      - name: vendas
+        columns:
+          - name: id_vendas
+            tests: [unique, not_null]
+          - name: id_veiculos
+            tests:
+              - not_null
+              - relationships:
+                  to: source('bronze', 'veiculos')
+                  field: id_veiculos
+          - name: id_concessionarias
+            tests:
+              - not_null
+              - relationships:
+                  to: source('bronze', 'concessionarias')
+                  field: id_concessionarias
+          - name: id_vendedores
+            tests:
+              - not_null
+              - relationships:
+                  to: source('bronze', 'vendedores')
+                  field: id_vendedores
+          - name: id_clientes
+            tests:
+              - not_null
+              - relationships:
+                  to: source('bronze', 'clientes')
+                  field: id_clientes
+          - name: valor_pago
+            tests:
+              - not_null
+              - positive_value
+
+  - name: bronze_decoy
+    description: >
+      Tabelas redundantes/"decoy" da fonte OLTP - mesma informação de negócio
+      que o pipeline canônico, só que denormalizada/inconsistente. Populadas
+      pelo Airflow (mesma task extrair_carregar_bronze), usadas só pelos
+      audits de reconciliação em models/gold/audits/audit_reconciliacao_*.sql.
+      Não fazem parte do medalhão em si.
+    schema: bronze_decoy
+    tables:
+      - name: costumer
+      - name: stg_costumer
+      - name: stg_vendas
+      - name: concessionaria_clientes
+      - name: lista_veiculos_compra_clientes
+      - name: veiculos_mais_caros

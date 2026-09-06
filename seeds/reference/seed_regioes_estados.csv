@@ -1,0 +1,28 @@
+sigla,estado,regiao,ordem_regiao
+AC,Acre,Norte,1
+AL,Alagoas,Nordeste,2
+AP,Amapá,Norte,1
+AM,Amazonas,Norte,1
+BA,Bahia,Nordeste,2
+CE,Ceará,Nordeste,2
+DF,Distrito Federal,Centro-Oeste,5
+ES,Espírito Santo,Sudeste,3
+GO,Goiás,Centro-Oeste,5
+MA,Maranhão,Nordeste,2
+MT,Mato Grosso,Centro-Oeste,5
+MS,Mato Grosso do Sul,Centro-Oeste,5
+MG,Minas Gerais,Sudeste,3
+PA,Pará,Norte,1
+PB,Paraíba,Nordeste,2
+PR,Paraná,Sul,4
+PE,Pernambuco,Nordeste,2
+PI,Piauí,Nordeste,2
+RJ,Rio de Janeiro,Sudeste,3
+RN,Rio Grande do Norte,Nordeste,2
+RS,Rio Grande do Sul,Sul,4
+RO,Rondônia,Norte,1
+RR,Roraima,Norte,1
+SC,Santa Catarina,Sul,4
+SP,São Paulo,Sudeste,3
+SE,Sergipe,Nordeste,2
+TO,Tocantins,Norte,1

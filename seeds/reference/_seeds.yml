@@ -1,0 +1,38 @@
+version: 2
+
+seeds:
+  - name: seed_regioes_estados
+    description: Referência dos estados com a região oficial
+    columns:
+      - name: sigla
+        tests: [unique, not_null]
+      - name: estado
+        tests: [not_null]
+      - name: regiao
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Norte","Nordeste","Centro-Oeste","Sudeste","Sul"]
+      - name: ordem_regiao
+        tests: [not_null]
+  - name: seed_segmentos_veiculos
+    description: Faixas de valor para classificação de veículos
+    columns:
+      - name: segmento
+        tests: [unique, not_null]
+      - name: valor_minimo
+        tests: [not_null]
+      - name: valor_maximo
+        description: Null representa sem limite superior
+      - name: ordem_segmento
+        tests: [unique,not_null]
+  - name: seed_tipos_veiculos
+    description: Mapear variações nas categorias dos veiculos
+    columns:
+      - name: tipo_origem
+        tests: [unique, not_null]
+      - name: tipo_padronizado
+        tests: [not_null]
+      - name: categoria
+        tests: [not_null]
+   

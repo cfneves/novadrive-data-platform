@@ -1,0 +1,4 @@
+segmento,valor_minimo,valor_maximo,ordem_segmento,descricao
+Standard,0.00,300000.00,1,"Veiculos populares e intermediarios, ate R$ 300.000,00"
+Premium,300000.01,400000.00,2,"Veiculos de medio-alto padrao, acima de R$ 300.000,00 ate R$ 400.000,00"
+Luxo,400000.01,,3,"Veiculos de altissimo padrao, acima de R$ 400.000,00, sem limite superior"

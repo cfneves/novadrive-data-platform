@@ -1,0 +1,30 @@
+exposures:
+  - name: dashboard_resumo_mensal
+    label: "Dashboard Resumo Mensal — Diretoria"
+    type: dashboard
+    maturity: medium
+    url: https://bi.novadrivermotors.com/dashboards/resumo-mensal
+    description: >
+      Dashboard usado pela Diretoria Comercial na reunião mensal, mostrando
+      receita, crescimento e destaques (veículo mais vendido, vendedor de
+      maior receita) do mês.
+    depends_on:
+      - ref('mart_resumo_mensal')
+    owner:
+      name: Diretoria Comercial
+      email: diretoria@novadrivermotors.com
+
+  - name: painel_governanca_desconto
+    label: "Painel de Governança de Desconto — Diretoria"
+    type: dashboard
+    maturity: low
+    url: https://bi.novadrivermotors.com/dashboards/governanca-desconto
+    description: >
+      Painel usado pela Diretoria Comercial para acompanhar desconto médio
+      por vendedor/concessionária/segmento e identificar padrões fora do
+      esperado.
+    depends_on:
+      - ref('mart_desconto_por_vendedor')
+    owner:
+      name: Diretoria Comercial
+      email: diretoria@novadrivermotors.com
